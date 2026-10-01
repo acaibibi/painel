@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Painel Empresarial</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="logo">
+            <span>◆</span>
+            Painel
+        </div>
+
+        <nav>
+            <button class="menu-btn active" onclick="mostrarCartoes()">
+                <span>💳</span>
+                Cartões
+            </button>
+
+            <button class="menu-btn">
+                <span>📊</span>
+                Relatórios
+            </button>
+
+            <button class="menu-btn">
+                <span>⚙️</span>
+                Configurações
+            </button>
+        </nav>
+    </aside>
+
+
+    <main class="main">
+
+        <header class="topbar">
+            <div>
+                <h1>Painel Empresarial</h1>
+                <p>Gerenciamento de cartões</p>
+            </div>
+
+            <div class="usuario">
+                <div class="avatar">E</div>
+                <div>
+                    <strong>Skcart</strong>
+                    <small>Administrador</small>
+                </div>
+            </div>
+        </header>
+
+
+        <section class="conteudo">
+
+            <div class="cabecalho">
+                <div>
+                    <h2>Cartões empresariais</h2>
+                    <p id="quantidade">Carregando cartões...</p>
+                </div>
+
+                <button class="atualizar" onclick="mostrarCartoes()">
+                    ↻ Atualizar
+                </button>
+            </div>
+
+
+            <div id="resultado" class="cartoes">
+                <!-- Os cartões serão inseridos aqui pelo JavaScript -->
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- Dados -->
+    <script src="dados.js"></script>
+
+    <!-- Código do painel -->
+    <script>
+
+        function mostrarCartoes() {
+
+            const resultado = document.getElementById("resultado");
+            const quantidade = document.getElementById("quantidade");
+
+            if (!Array.isArray(dados)) {
+                resultado.innerHTML = `
+                    <div class="erro">
+                        Erro: o arquivo dados.js precisa conter um array.
+                    </div>
+                `;
+
+                quantidade.textContent = "Erro nos dados";
+                return;
+            }
+
+
+            quantidade.textContent =
+                `${dados.length} cartão${dados.length !== 1 ? "ões" : ""} cadastrado${dados.length !== 1 ? "s" : ""}`;
+
+
+            resultado.innerHTML = dados.map(cartao => {
+
+                const tipo =
+                    cartao.type === "CREDIT"
+                        ? "Crédito"
+                        : cartao.type === "DEBIT"
+                            ? "Débito"
+                            : "Desconhecido";
+
+
+                const classeTipo =
+                    cartao.type === "CREDIT"
+                        ? "credito"
+                        : "debito";
+
+
+                return `
+                    <article class="cartao">
+
+                        <div class="cartao-topo">
+
+                            <div class="bandeira">
+                                ${cartao.brand || "N/A"}
+                            </div>
+
+                            <span class="status">
+                                ● ${cartao.status || "N/A"}
+                            </span>
+
+                        </div>
+
+
+                        <div class="chip">
+                            ▦
+                        </div>
+
+
+                        <div class="numero">
+                            ${cartao.number || "**** **** **** ****"}
+                        </div>
+
+
+                        <div class="cartao-info">
+
+                            <div>
+                                <span>TITULAR</span>
+                                <strong>${cartao.name || "Não informado"}</strong>
+                            </div>
+
+                            <div>
+                                <span>VALIDADE</span>
+                                <strong>${cartao.date || "Não informado"}</strong>
+                            </div>
+
+                            <div>
+                                <span>CVC</span>
+                                <strong>${cartao.CVC || "Não informado"}</strong>
+                            </div>
+
+                            <div>
+                                <span>Bin</span>
+                                <strong>${cartao.pin || "Não informado"}</strong>
+                            </div>
+
+                        </div>
+
+
+                        <div class="cartao-footer">
+
+                            <span class="tipo ${classeTipo}">
+                                ${tipo}
+                            </span>
+
+                            <span>
+                                Cartão empresarial
+                            </span>
+
+                        </div>
+
+                    </article>
+                `;
+
+            }).join("");
+        }
+
+
+        // Carrega os cartões automaticamente ao abrir a página
+        document.addEventListener("DOMContentLoaded", mostrarCartoes);
+
+    </script>
+
+</body>
+</html>
